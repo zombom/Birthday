@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZUMR's Birthday | 12.23</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Homemade+Apple&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --obsidian: #080808;
+            --stone: #121212;
+            --text-soft: #e5e5e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            height: 100%;
+            background-color: var(--obsidian);
+            color: var(--text-soft);
+            font-family: 'EB Garamond', serif;
+            scroll-behavior: smooth;
+            overflow: hidden;
+        }
+
+        /* Scroll Snap */
+        main {
+            height: 100vh;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            scrollbar-width: none;
+        }
+        main::-webkit-scrollbar { display: none; }
+
+        section {
+            height: 100vh;
+            width: 100%;
+            scroll-snap-align: start;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            overflow: hidden;
+        }
+
+        /* --- GOLDEN FAIRY LIGHTS --- */
+        .lights-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 150px;
+            pointer-events: none;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around;
+        }
+
+        .light-string {
+            width: 1px;
+            background: rgba(255, 215, 0, 0.2);
+            position: relative;
+            transform-origin: top;
+            animation: sway 4s ease-in-out infinite alternate;
+        }
+
+        .bulb {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 8px;
+            background: var(--gold);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--gold), 0 0 20px var(--gold-glow);
+            animation: flicker 2s infinite alternate;
+        }
+
+        @keyframes sway {
+            from { transform: rotate(-2deg); }
+            to { transform: rotate(2deg); }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.7; transform: translateX(-50%) scale(0.9); }
+        }
+
+        /* --- MINI NAV BAR --- */
+        .mini-nav {
+            position: fixed;
+            top: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1100;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(12px);
+            padding: 0.6rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            gap: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .mini-nav a {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.6rem;
+            font-weight: 400;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            color: rgba(255, 255, 255, 0.5);
+            transition: all 0.4s ease;
+            text-decoration: none;
+        }
+
+        .mini-nav a:hover, .mini-nav a.active {
+            color: var(--gold);
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        /* --- MINI CALENDAR --- */
+        .mini-calendar {
+            background: rgba(255, 255, 255, 0.02);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            padding: 1.5rem 2rem;
+            width: 320px;
+            border-radius: 20px;
+            box-shadow: 0 0 25px rgba(255, 215, 0, 0.1), inset 0 0 15px rgba(255, 255, 255, 0.02);
+            margin-top: 2rem;
+            transition: all 0.5s ease;
+        }
+        
+        .mini-calendar:hover {
+            border-color: var(--gold);
+            box-shadow: 0 0 35px var(--gold-glow);
+            transform: translateY(-5px);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+            text-align: center;
+        }
+
+        .calendar-header {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            margin-bottom: 1.2rem;
+            color: var(--gold);
+            text-align: center;
+            font-weight: 300;
+            text-shadow: 0 0 10px var(--gold-glow);
+        }
+
+        .day-label {
+            font-size: 0.55rem;
+            opacity: 0.4;
+            padding-bottom: 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            font-size: 0.85rem;
+            padding: 8px;
+            border-radius: 8px;
+            color: #555;
+            transition: all 0.3s ease;
+        }
+
+        .bday-highlight {
+            background: var(--gold);
+            color: var(--obsidian);
+            font-weight: 700;
+            position: relative;
+            box-shadow: 0 0 20px var(--gold-glow);
+            transform: scale(1.1);
+        }
+
+        /* --- MESSAGE CARDS --- */
+        .message-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .msg-card {
+            background: #111;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            transition: all 0.5s ease;
+        }
+
+        .msg-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-5px);
+            background: #151515;
+        }
+
+        .msg-card p {
+            font-family: 'Homemade Apple', cursive;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: #aaa;
+        }
+
+        .msg-card::after {
+            content: '✨';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            opacity: 0.3;
+        }
+
+        /* --- ALBUM --- */
+        .album-container {
+            position: relative;
+            width: 320px;
+            height: 400px;
+        }
+
+        .polaroid {
+            position: absolute;
+            background: #1a1a1a;
+            padding: 12px 12px 48px 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            transition: 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+            cursor: pointer;
+            width: 280px;
+        }
+
+        .polaroid img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            filter: grayscale(0.2);
+        }
+
+        .polaroid:nth-child(1) { transform: rotate(-5deg); z-index: 3; }
+        .polaroid:nth-child(2) { transform: rotate(3deg) translate(20px, 20px); z-index: 2; }
+        .polaroid:nth-child(3) { transform: rotate(-2deg) translate(-15px, 15px); z-index: 1; }
+
+        .polaroid:hover {
+            transform: scale(1.1) rotate(0deg) translate(0, 0) !important;
+            z-index: 50;
+            border-color: var(--gold);
+        }
+
+        /* --- FAIRY BUTTON --- */
+        .fairy-button {
+            margin-top: 3rem;
+            position: relative;
+            padding: 0.8rem 2.5rem;
+            background: transparent;
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            letter-spacing: 0.4em;
+            border-radius: 50px;
+            overflow: hidden;
+            transition: all 0.5s ease;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .fairy-button:hover {
+            background: var(--gold);
+            color: black;
+            box-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        /* --- UTILS --- */
+        .text-glow {
+            text-shadow: 0 0 20px var(--gold-glow);
+        }
+
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1.2s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .grain-overlay {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 100;
+            opacity: 0.04;
+            background: url('https://www.transparenttextures.com/patterns/natural-paper.png');
+        }
+    </style>
+</head>
+<body class="selection:bg-yellow-900 selection:text-yellow-100">
+
+    <div class="grain-overlay"></div>
+
+    <!-- Fairy Lights -->
+    <div class="lights-container" id="lights"></div>
+
+    <!-- Mini Nav -->
+    <nav class="mini-nav">
+        <a href="#home" id="nav-home" class="active">HOME</a>
+        <a href="#messages" id="nav-messages">MESSAGES</a>
+        <a href="#memories" id="nav-memories">ALBUM</a>
+        <a href="#letter" id="nav-letter">LETTER</a>
+    </nav>
+
+    <main id="main-scroll">
+        
+        <!-- SECTION 1: HOME (GREETING & CALENDAR) -->
+        <section id="home">
+            <div class="text-center fade-in">
+                <h1 class="text-4xl md:text-6xl font-light text-white text-glow mb-4 tracking-[0.2em]">HAPPY BIRTHDAY ZUMR</h1>
+                <p class="text-[10px] tracking-[0.6em] uppercase text-stone-600">Established 2025 // Winter Solstice</p>
+            </div>
+
+            <div class="mini-calendar fade-in" style="transition-delay: 200ms;">
+                <div class="calendar-header">December 2025</div>
+                <div class="calendar-grid">
+                    <div class="day-label">M</div><div class="day-label">T</div><div class="day-label">W</div><div class="day-label">T</div><div class="day-label">F</div><div class="day-label">S</div><div class="day-label">S</div>
+                    <script>
+                        // Dec 1, 2025 is a Monday
+                        for(let i=1; i<=31; i++) {
+                            const isBday = (i === 23);
+                            document.write(`<div class="calendar-day ${isBday ? 'bday-highlight' : ''}">${i}</div>`);
+                        }
+                    </script>
+                </div>
+            </div>
+            
+            <div class="absolute bottom-10 animate-bounce opacity-20">
+                <i data-lucide="chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- SECTION 2: MESSAGE CARDS -->
+        <section id="messages" class="bg-[#090909]">
+            <div class="mb-12 text-center fade-in">
+                <h2 class="text-2xl font-light text-white tracking-[0.3em] uppercase">Scraps for You</h2>
+                <div class="h-px w-10 bg-gold/30 mx-auto mt-4"></div>
+            </div>
+
+            <div class="message-grid fade-in" style="transition-delay: 200ms;">
+                <div class="msg-card">
+                    <p>You are the BEST make the world feel a little bit more gentle, "Zumr". You're the kinddest person in this freaking University</p>
+                </div>
+                <div class="msg-card">
+                    <p>Baki ap or apka khana kamal. I love you from heart (dil wla) Peace Out!</p>
+                </div>
+                <div class="msg-card">
+                    <p>Or thande pani se nahana shuruh kar do, te okha nhi hona.</p>
+                </div>
+                <div class="msg-card">
+                    <p>May you live long and healthy (Or mujh se baatein karte rehna or khane khilati rahein 😁 - abhi bohat si treats hain apki taraf 😅).</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: MEMORY ALBUM -->
+        <section id="memories" class="bg-[#070707]">
+            <div class="mb-16 text-center fade-in">
+                <h2 class="text-2xl font-light text-white tracking-[0.3em] uppercase">The Memory Album</h2>
+            </div>
+
+            <div class="album-container fade-in">
+                <div class="polaroid">
+                    <img src="1.jpeg" alt="Memory 1">
+                </div>
+                <div class="polaroid">
+                    <img src="2.jpeg" alt="Memory 2">
+                </div>
+                <div class="polaroid">
+                    <img src="5.jpeg" alt="Memory 3">
+                </div>
+            </div>
+
+            <p class="mt-12 text-[10px] tracking-[0.4em] uppercase opacity-20 animate-pulse">Hover to flip through</p>
+        </section>
+
+        <!-- SECTION 4: THE LETTER -->
+        <section id="letter" class="bg-[#050505]">
+            <div class="max-w-2xl w-full border-l border-gold/30 bg-[#111] p-10 md:p-14 shadow-2xl fade-in overflow-y-auto max-h-[85vh] hide-scrollbar">
+                <div class="flex justify-between items-start mb-10">
+                    <h3 class="text-2xl italic text-gold">My Dearest Zumr,</h3>
+                    <span class="text-[9px] tracking-[0.4em] uppercase opacity-30">12.21.25</span>
+                </div>
+                
+                <div class="space-y-8 text-stone-300 font-light leading-relaxed text-lg text-justify">
+                    <p>Hey, Happy Birthday 🎂.</p>
+                    
+                    <p>I don’t even know where to start, because wishing you happy birthday alone feels incomplete after things we came through and understand so much. It’s been almost 5 months since this University gave me a friend like you, and honestly, you’ve been one of the most constant people in my life there. Through random talks, positivity, negativity, teasing and laughing through screen — you were always there.</p>
+                    
+                    <p>I know I’ve hurt you many times. Not intentionally, but I know intentions don’t erase pain. I’ve made stupid jokes, teased you when I shouldn’t have, and every time things got messy, you were the one stepping up. I am truly sorry fot that hurting part.</p>
+                    
+                    <p>On your birthday, I don’t want to promise perfection. I just want you to know that I’m trying to be better — more thoughtful, more careful, and more aware of how my actions affect you. You matter to me more than any khana, joke, prank, or ego. I hope this year brings you happiness, growth, and people who never make you happy doubt your worth. And if I’m lucky enough to still be part of your life, I hope I can be someone who adds peace instead of confusion.</p>
+                    
+                    <p>Happy Birthday. You truly deserve the best.</p>
+                    
+                    <p class="pt-8 italic text-gold font-serif text-2xl">
+                        Your Innocent Dost 🐥
+                    </p>
+                </div>
+            </div>
+
+            <button class="fairy-button fade-in" style="transition-delay: 400ms;" onclick="window.location.href='chirkut.html'">
+                <i data-lucide="sparkle" class="w-4 h-4"></i>
+                For My Saheli
+            </button>
+        </section>
+    </main>
+
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        // 1. Generate Fairy Lights
+        const lightContainer = document.getElementById('lights');
+        const lightCount = 20;
+        for (let i = 0; i < lightCount; i++) {
+            const string = document.createElement('div');
+            string.className = 'light-string';
+            
+            const height = Math.floor(Math.random() * 80) + 40;
+            const delay = Math.random() * 4;
+            
+            string.style.height = `${height}px`;
+            string.style.animationDelay = `${delay}s`;
+            
+            const bulb = document.createElement('div');
+            bulb.className = 'bulb';
+            bulb.style.animationDelay = `${delay}s`;
+            
+            string.appendChild(bulb);
+            lightContainer.appendChild(string);
+        }
+
+        // 2. Scroll & Nav logic
+        const main = document.getElementById('main-scroll');
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.mini-nav a');
+
+        main.addEventListener('scroll', () => {
+            let current = "";
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                if (main.scrollTop >= sectionTop - 150) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 3. Intersection Observer for Fade-In
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+        // 4. Smooth scroll on Nav click
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                main.scrollTo({
+                    top: targetSection.offsetTop,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
